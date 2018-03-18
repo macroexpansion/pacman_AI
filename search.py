@@ -137,17 +137,17 @@ def uniformCostSearch(problem):
 
     while not _priority_queue.isEmpty():
         currentState, path = _priority_queue.pop()
-        if problem.isGoalState(currentState):
-            return path
-        visitedState.append(currentState)
-        for state, direction, cost in problem.getSuccessors(currentState):
-            if state not in visitedState:
+        if currentState not in visitedState:
+            if problem.isGoalState(currentState):
+                return path
+            visitedState.append(currentState)
+            for state, direction, cost in problem.getSuccessors(currentState):
                 traveledPath = path + [direction]
                 traveledCost = problem.getCostOfActions(traveledPath)
                 _priority_queue.push((state, traveledPath), traveledCost)
                 # visitedState.append(state)
-                print traveledCost
     return []
+
 
 def nullHeuristic(state, problem=None):
     """
