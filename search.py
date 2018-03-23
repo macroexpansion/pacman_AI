@@ -123,6 +123,7 @@ def breadthFirstSearch(problem):
                 _path = path + [direction]
                 queue.push((state, _path))
                 visitedState.append(state)
+            # print "successor:", problem.getSuccessors(currentState)
         # print "PATH: ", path
     # util.raiseNotDefined()
     return []
