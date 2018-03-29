@@ -379,7 +379,28 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+
+    unvisitedGoalCorners = []
+    goalCorners = state[1]
+
+    for corner in corners:
+        if corner not in goalCorners:
+            unvisitedGoalCorners.append(corner)
+
+    cost_n_corner = []
+    heuristicCost = 0
+    currentPosition = state[0]
+
+    while len(unvisitedGoalCorners) > 0:
+        for corner in unvisitedGoalCorners:
+            cost_n_corner.append((util.manhattanDistance(currentPosition, corner), corner))
+        manhattanDistance, corner = min(cost_n_corner)
+        heuristicCost += manhattanDistance
+        currentPosition = corner
+        unvisitedGoalCorners.remove(corner)
+        cost_n_corner = []
+
+    return heuristicCost     # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -473,7 +494,16 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+
+    foodList = foodGrid.asList()
+    heuristicCost = 0
+
+    for food in foodList:
+        distance = mazeDistance(position, food, problem.startingGameState)
+        if heuristicCost < distance:
+            heuristicCost = distance
+
+    return heuristicCost
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -504,7 +534,9 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        actions = search.bfs(problem)
+        return actions
+        # util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -540,7 +572,17 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        dist = []
+        foodList = self.food.asList()
+        for food in foodList:
+            distance = util.manhattanDistance(state, food)
+            dist.append( (distance, food) )
+        distance, food = min(dist)
+        dist = []
+        if state == food:
+            return True
+        return False
+        # util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
     """
